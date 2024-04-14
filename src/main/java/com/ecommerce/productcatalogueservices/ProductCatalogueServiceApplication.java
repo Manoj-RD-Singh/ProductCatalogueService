@@ -1,4 +1,4 @@
-package com.ecommerce.productcatalogueservice;
+package com.ecommerce.productcatalogueservices;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
