@@ -1,15 +1,16 @@
 package com.ecommerce.productcatalogueservices.controllers;
 
 
-import com.ecommerce.productcatalogueservices.dtos.FakeStoreDTO;
 import com.ecommerce.productcatalogueservices.dtos.ProductDTO;
 import com.ecommerce.productcatalogueservices.enums.BaseModelStatus;
 import com.ecommerce.productcatalogueservices.models.Product;
+import com.ecommerce.productcatalogueservices.models.ProductCategory;
 import com.ecommerce.productcatalogueservices.services.IProductService;
-import lombok.Getter;
+import jdk.jfr.Category;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -39,12 +40,15 @@ public class ProductController {
 
     @GetMapping("{id}")
     public ResponseEntity<Product> getProduct(@PathVariable("id") Long productId){
+        MultiValueMap<String, String> header = new LinkedMultiValueMap<>();
         try {
             if(productId < 1){
                 throw new IllegalArgumentException("Product id is not correct");
             }
             Product product = productService.getProduct(productId);
-            return new ResponseEntity<>(product, HttpStatus.OK);
+            header.add("first name", "manoj");
+            header.add("second name", "singh");
+            return new ResponseEntity<>(product, header,HttpStatus.OK);
         }catch(Exception ex){
             ex.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -53,29 +57,42 @@ public class ProductController {
 
     @PostMapping
     public Product createProduct(@RequestBody ProductDTO productDTO){
-        return productService.createProduct(productDTO);
-
+        Product product = mapperProductDtoToProduct(productDTO);
+        return productService.createProduct(product);
     }
 
-    @PutMapping
-    public Product updateProduct(@RequestBody ProductDTO productDTO){
-        Product p = new Product();
-        p.setId(productDTO.getId());
-        p.setName(productDTO.getName());
-        p.setDescription(productDTO.getDescription());
-        p.setPrice(productDTO.getPrice());
-        return p;
+    @PutMapping("{id}")
+    public ResponseEntity<Product> updateProduct(@PathVariable("id") Long id, @RequestBody ProductDTO productDTO){
+       try{
+           Product product = productService.updateProduct(id, mapperProductDtoToProduct(productDTO));
+           return new ResponseEntity<>(product, HttpStatus.OK);
+       }catch(Exception ex){
+           ex.printStackTrace();
+           return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+       }
     }
 
-    @DeleteMapping
-    public Product deleteProduct(@RequestBody ProductDTO productDTO){
-        Product p = new Product();
-        p.setId(productDTO.getId());
-        p.setName(productDTO.getName());
-        p.setDescription(productDTO.getDescription());
-        p.setPrice(productDTO.getPrice());
-        p.setStatus(BaseModelStatus.INACTIVE);
-        return p;
+    @DeleteMapping("{id}")
+    public ResponseEntity<Product> deleteProduct(@PathVariable("id") Long productId){
+       try{
+           Product product = productService.deleteProduct(productId);
+           return new ResponseEntity<Product>(product, HttpStatus.OK);
+       }catch(Exception ex){
+            ex.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+       }
+    }
+
+    private Product mapperProductDtoToProduct(ProductDTO productDTO){
+        Product product = new Product();
+        product.setName(productDTO.getName());
+        product.setImageURL(productDTO.getImageURL());
+        product.setPrice(productDTO.getPrice());
+        product.setDescription(productDTO.getDescription());
+        if(productDTO.getCategory() != null){
+            product.setCategory(productDTO.getCategory());
+        }
+        return product;
     }
 
 

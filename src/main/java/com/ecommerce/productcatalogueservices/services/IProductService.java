@@ -13,5 +13,9 @@ public interface IProductService {
 
     List<Product> getAllProducts();
 
-    Product createProduct(ProductDTO productDTO);
+    Product createProduct(Product product);
+
+    Product deleteProduct(Long id);
+
+    Product updateProduct(Long id, Product product);
 }
