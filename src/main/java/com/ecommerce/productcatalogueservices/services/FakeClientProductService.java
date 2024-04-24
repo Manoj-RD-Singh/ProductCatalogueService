@@ -6,18 +6,17 @@ import com.ecommerce.productcatalogueservices.models.Product;
 import com.ecommerce.productcatalogueservices.models.ProductCategory;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class ProductService implements IProductService {
+public class FakeClientProductService implements IProductService {
 
     private RestTemplateBuilder restTemplateBuilder;
     private FakeStoreClient fakeStoreClient;
 
-    public ProductService(RestTemplateBuilder restTemplateBuilder, FakeStoreClient fakeStoreClient){
+    public FakeClientProductService(RestTemplateBuilder restTemplateBuilder, FakeStoreClient fakeStoreClient){
         this.restTemplateBuilder = restTemplateBuilder;
         this.fakeStoreClient = fakeStoreClient;
     }

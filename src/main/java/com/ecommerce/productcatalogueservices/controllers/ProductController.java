@@ -28,31 +28,23 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity<List<Product>> getAllProducts(){
-        try {
             List<Product> productList = new ArrayList<>();
             productList = productService.getAllProducts();
             return new ResponseEntity<>(productList, HttpStatus.OK);
-        }catch(Exception ex){
-            ex.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Product> getProduct(@PathVariable("id") Long productId){
+    public ResponseEntity<Object> getProduct(@PathVariable("id") Long productId){
         MultiValueMap<String, String> header = new LinkedMultiValueMap<>();
-        try {
             if(productId < 1){
-                throw new IllegalArgumentException("Product id is not correct");
+              //  throw new IllegalArgumentException("Product id is not correct");
+                return new ResponseEntity<>("excepton", HttpStatus.INTERNAL_SERVER_ERROR);
             }
             Product product = productService.getProduct(productId);
             header.add("first name", "manoj");
+            header.add("first name", "manoj");
             header.add("second name", "singh");
             return new ResponseEntity<>(product, header,HttpStatus.OK);
-        }catch(Exception ex){
-            ex.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
 
     @PostMapping
@@ -94,6 +86,8 @@ public class ProductController {
         }
         return product;
     }
+
+
 
 
 }
