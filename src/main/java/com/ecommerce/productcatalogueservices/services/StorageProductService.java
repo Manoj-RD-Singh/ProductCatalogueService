@@ -1,6 +1,8 @@
 package com.ecommerce.productcatalogueservices.services;
 
 import com.ecommerce.productcatalogueservices.models.Product;
+import com.ecommerce.productcatalogueservices.models.ProductCategory;
+import com.ecommerce.productcatalogueservices.repositories.ProductCategoryRepository;
 import com.ecommerce.productcatalogueservices.repositories.ProductRepository;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -14,8 +16,12 @@ public class StorageProductService implements  IProductService{
 
     private ProductRepository productRepository;
 
-    public StorageProductService(ProductRepository productRepository){
+    private ProductCategoryRepository productCategoryRepository;
+
+    public StorageProductService(ProductRepository productRepository, ProductCategoryRepository productCategoryRepository){
+
         this.productRepository = productRepository;
+        this.productCategoryRepository = productCategoryRepository;
     }
     @Override
     public Product getProduct(Long productId) {
@@ -33,6 +39,14 @@ public class StorageProductService implements  IProductService{
 
     @Override
     public Product createProduct(Product product) {
+      /*  ProductCategory productCategory = null;
+        if(product.getCategory() != null){
+            productCategory = productCategoryRepository.findByName(product.getCategory().getName());
+            if(productCategory != null){
+                product.setCategory(productCategory);
+            }
+        }*/
+
         return productRepository.save(product);
     }
 

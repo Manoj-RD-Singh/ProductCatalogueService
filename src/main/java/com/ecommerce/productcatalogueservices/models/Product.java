@@ -22,7 +22,7 @@ public class Product extends BaseModel{
     private Double price;
     //1:1
     //M:1
-    @ManyToOne(cascade = CascadeType.ALL)
     @JsonManagedReference
+    @ManyToOne(cascade = CascadeType.ALL)
     private ProductCategory category;
 }
