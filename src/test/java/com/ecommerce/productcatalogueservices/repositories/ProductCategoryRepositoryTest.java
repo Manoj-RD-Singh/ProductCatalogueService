@@ -20,6 +20,9 @@ class ProductCategoryRepositoryTest {
     @Autowired
     ProductCategoryRepository productCategoryRepository;
 
+    @Autowired
+    ProductRepository productRepository;
+
     @Test
     @Transactional
     @Rollback(value = true) // Bydefaul it is true so that Db changes rollbacked
@@ -34,6 +37,33 @@ class ProductCategoryRepositoryTest {
         }
 
 
+    }
+
+    @Test
+    @Transactional
+    public void testFetchMode(){
+        Optional<ProductCategory> productCategoryOptional = productCategoryRepository.findById(2l);
+        System.out.println("Second query if any");
+       /* if(productCategoryOptional.isPresent()){
+            System.out.println( productCategoryOptional.get().getName());
+            List<Product> products = productCategoryOptional.get().getProducts();
+            for(Product p : products){
+                System.out.println(p.getName());
+            }
+        }*/
+    }
+
+    @Test
+    @Transactional
+    public void getAllCategoryAndProduct(){
+        List<ProductCategory> productCategories = productCategoryRepository.findAll();
+        for(ProductCategory pc : productCategories){
+            System.out.println(pc.getName());
+            List<Product> products = pc.getProducts();
+            for(Product p : products){
+                System.out.println(p.getName());
+            }
+        }
     }
 
 }

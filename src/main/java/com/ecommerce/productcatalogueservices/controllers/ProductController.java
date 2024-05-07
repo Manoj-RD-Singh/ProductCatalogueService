@@ -34,11 +34,11 @@ public class ProductController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Object> getProduct(@PathVariable("id") Long productId){
+    public ResponseEntity<Product> getProduct(@PathVariable("id") Long productId){
         MultiValueMap<String, String> header = new LinkedMultiValueMap<>();
             if(productId < 1){
-              //  throw new IllegalArgumentException("Product id is not correct");
-                return new ResponseEntity<>("excepton", HttpStatus.INTERNAL_SERVER_ERROR);
+                throw new IllegalArgumentException("Product id is not correct");
+               // return new ResponseEntity<>("excepton", HttpStatus.INTERNAL_SERVER_ERROR);
             }
             Product product = productService.getProduct(productId);
             header.add("first name", "manoj");
@@ -81,8 +81,13 @@ public class ProductController {
         product.setImageURL(productDTO.getImageURL());
         product.setPrice(productDTO.getPrice());
         product.setDescription(productDTO.getDescription());
-        if(productDTO.getCategory() != null){
-            product.setCategory(productDTO.getCategory());
+        product.setIsPrimeProduct(productDTO.getIsPrimeProduct());
+        if(productDTO.getCategoryDTO() != null){
+            ProductCategory productCategory = new ProductCategory();
+            productCategory.setId(productDTO.getCategoryDTO().getId());
+            productCategory.setName(productDTO.getCategoryDTO().getName());
+            productCategory.setDescription(productDTO.getCategoryDTO().getDescription());
+            product.setCategory(productCategory);
         }
         return product;
     }

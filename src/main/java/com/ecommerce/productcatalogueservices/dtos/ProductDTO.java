@@ -12,5 +12,6 @@ public class ProductDTO {
     private String description;
     private String imageURL;
     private Double price;
-    private ProductCategory category;
+    private ProductCategoryDTO categoryDTO;
+    private Boolean isPrimeProduct;
 }
