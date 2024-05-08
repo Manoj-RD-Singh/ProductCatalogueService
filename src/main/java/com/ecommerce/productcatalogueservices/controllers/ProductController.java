@@ -7,6 +7,8 @@ import com.ecommerce.productcatalogueservices.models.Product;
 import com.ecommerce.productcatalogueservices.models.ProductCategory;
 import com.ecommerce.productcatalogueservices.services.IProductService;
 import jdk.jfr.Category;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
@@ -20,9 +22,11 @@ import java.util.List;
 @RequestMapping("/products")
 public class ProductController {
 
+
     private IProductService productService;
 
-    public ProductController(IProductService productService){
+    @Autowired
+    public ProductController(@Qualifier("storageProductService") IProductService productService){
         this.productService = productService;
     }
 

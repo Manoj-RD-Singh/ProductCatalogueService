@@ -4,6 +4,8 @@ import com.ecommerce.productcatalogueservices.models.Product;
 import com.ecommerce.productcatalogueservices.services.IProductService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -21,6 +23,9 @@ class ProductControllerTest {
 
     @MockBean
     private IProductService productService;
+
+    @Captor
+    private ArgumentCaptor<Long> idCaptor;
 
     @Test
     void testGetProductWithValidIDReturnSuccessfulProduct() {
@@ -59,5 +64,15 @@ class ProductControllerTest {
         //Assert
         assertThrows(IllegalArgumentException.class, () -> productController.getProduct(0l));
         verify(productService,times(0)).getProduct(0l);
+    }
+
+    @Test
+    public void testGetProductProductServiceCalledWithProperId(){
+        Long id = 2l;
+
+        productController.getProduct(id);
+
+        verify(productService).getProduct(idCaptor.capture());
+        assertEquals(id,idCaptor.getValue());
     }
 }

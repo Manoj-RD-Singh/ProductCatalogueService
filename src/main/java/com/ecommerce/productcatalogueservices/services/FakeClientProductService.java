@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
+@Service("fakeStoreService")
 public class FakeClientProductService implements IProductService {
 
     private RestTemplateBuilder restTemplateBuilder;
