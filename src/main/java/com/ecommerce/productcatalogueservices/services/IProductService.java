@@ -18,4 +18,6 @@ public interface IProductService {
     Product deleteProduct(Long id);
 
     Product updateProduct(Long id, Product product);
+
+    Product getProductDetailsByProductIdAndUserId(Long productId, Long userId);
 }

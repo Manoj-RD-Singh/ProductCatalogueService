@@ -43,4 +43,8 @@ public class ProductServiceStub implements IProductService {
         hm.put(id, product);
         return hm.get(id);
     }
+
+    public Product getProductDetailsByProductIdAndUserId(Long productId, Long userId){
+        return null;
+    }
 }

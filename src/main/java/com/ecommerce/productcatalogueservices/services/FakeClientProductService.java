@@ -89,6 +89,8 @@ public class FakeClientProductService implements IProductService {
         return product;
     }
 
-
+    public Product getProductDetailsByProductIdAndUserId(Long productId, Long userId){
+        return null;
+    }
 
 }
