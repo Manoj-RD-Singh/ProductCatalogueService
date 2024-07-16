@@ -4,34 +4,52 @@ import com.ecommerce.productcatalogueservices.client.fakeStoreClient.FakeStoreCl
 import com.ecommerce.productcatalogueservices.dtos.FakeStoreDTO;
 import com.ecommerce.productcatalogueservices.models.Product;
 import com.ecommerce.productcatalogueservices.models.ProductCategory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service("fakeStoreService")
+@Slf4j
 public class FakeClientProductService implements IProductService {
 
     private RestTemplateBuilder restTemplateBuilder;
     private FakeStoreClient fakeStoreClient;
 
-    public FakeClientProductService(RestTemplateBuilder restTemplateBuilder, FakeStoreClient fakeStoreClient){
+    private RedisTemplate<String, Object> redisTemplate;
+
+    public FakeClientProductService(RestTemplateBuilder restTemplateBuilder,
+                                    FakeStoreClient fakeStoreClient,RedisTemplate<String, Object> redisTemplate){
         this.restTemplateBuilder = restTemplateBuilder;
         this.fakeStoreClient = fakeStoreClient;
+        this.redisTemplate = redisTemplate;
     }
 
-    public Product getProduct(Long productId){
-       FakeStoreDTO fakeStoreDTO = fakeStoreClient.getProduct(productId);
+    public Product getProduct(Long productId) {
+        //check in redis cache first
+        FakeStoreDTO fakeStoreDTO = null;
+        fakeStoreDTO = (FakeStoreDTO) redisTemplate.opsForHash().get("PRODUCTS", productId);
+        if(fakeStoreDTO != null){
+            log.info("Found in cache : "+productId);
+            return convertFakeStoreToProduct(fakeStoreDTO);
+        }
+        //if not found in cache - get from fakestore and put in cache
+       fakeStoreDTO = fakeStoreClient.getProduct(productId);
        Product product = null;
        if(fakeStoreDTO != null){
            product = convertFakeStoreToProduct(fakeStoreDTO);
        }
+       redisTemplate.opsForHash().put("PRODUCTS", productId, fakeStoreDTO);
+
        return product;
 
     }
 
     public Product updateProduct(Long id, Product product){
+
         FakeStoreDTO fakeStoreDTO = fakeStoreClient.putForFakeStoreProduct(id, mapperProductToFakeStoreDTO(product));
         return convertFakeStoreToProduct(fakeStoreDTO);
     }
